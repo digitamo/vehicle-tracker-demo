@@ -1,0 +1,61 @@
+# NOTE: Load balancing is handled by docker swarm, But you can use an external load balancer
+# link: https://docs.docker.com/engine/swarm/ingress/
+
+# NOTE: service discovery is also handled by docker swarm.
+# TODO: Write note on how you would implement auto-scaling.
+
+version: "3"
+services:
+  web:
+    image: digitamo/status
+    build: status
+    deploy:
+      replicas: 4
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+    # TODO: Use docker secrets.
+    # TODO: Use depends on.
+    #      secrets:
+    #        - secret_code
+    ports:
+      - "4000:80"
+    networks:
+      - webnet
+    healthcheck:
+      test: curl --fail http://localhost:80/ping || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 5
+
+
+  visualizer:
+    image: dockersamples/visualizer:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - "/home/docker/data:/data"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    command: redis-server --appendonly yes
+    networks:
+      - webnet
+networks:
+  webnet:
