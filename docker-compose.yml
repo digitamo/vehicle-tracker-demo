@@ -19,8 +19,8 @@ services:
         condition: on-failure
       placement:
         constraints: [node.role == worker]
-    # TODO: Use docker secrets.
-    # TODO: Use depends on.
+    # TODO: Use docker secrets for managing secrets.
+    # TODO: Use depends on if needed.
     #      secrets:
     #        - secret_code
     ports:
@@ -43,18 +43,6 @@ services:
     deploy:
       placement:
         constraints: [node.role == manager]
-    networks:
-      - webnet
-  redis:
-    image: redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - "/home/docker/data:/data"
-    deploy:
-      placement:
-        constraints: [node.role == manager]
-    command: redis-server --appendonly yes
     networks:
       - webnet
 networks:
