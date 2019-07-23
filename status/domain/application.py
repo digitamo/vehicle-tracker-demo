@@ -9,16 +9,12 @@ from eventsourcing.infrastructure.sequenceditemmapper import SequencedItemMapper
 from eventsourcing.infrastructure.snapshotting import EventSourcedSnapshotStrategy
 from eventsourcing.utils.transcoding import ObjectJSONDecoder, ObjectJSONEncoder
 
-from status.domain.model import create_new_hit
 from status.domain.infrastructure import ExampleRepository
+from status.domain.model import create_new_hit, Ping
 
 
-# Please note, the code is this module is basically old-fashioned, and will
-# be removed when the tests that depend on it are rewritten to use the new
-# application classes in package eventsourcing.application. These were the
-# original base classes for event sourced applications, but were set aside
-# in favour of the new, less complicated application base classes
-
+# TODO: Try extending `eventsourcing.application.simple.SimpleApplication` instead these.
+# TODO: Strip down Application to only what you need.
 
 class ApplicationWithEventStores(ABC):
     """
@@ -110,12 +106,12 @@ class ApplicationWithEventStores(ABC):
 
 
 class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
-    # TODO: Create a custom persistence policy to save the Vehicle status.
     def __init__(self, **kwargs):
         super(ApplicationWithPersistencePolicies, self).__init__(**kwargs)
         self.entity_persistence_policy = self.construct_entity_persistence_policy()
         self.snapshot_persistence_policy = self.construct_snapshot_persistence_policy()
         self.log_persistence_policy = self.construct_log_persistence_policy()
+        self.view_persistence_policy = self.construct_view_persistence_policy()
 
     def construct_entity_persistence_policy(self):
         if self.entity_event_store:
@@ -138,6 +134,15 @@ class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
                 persist_event_type=Logged,
             )
 
+    def construct_view_persistence_policy(self):
+        from status.domain.policy import ViewPersistencePolicy
+
+        if self.entity_event_store:
+            return ViewPersistencePolicy(
+                event_store=self.entity_event_store,
+                persist_event_type=Ping.Created
+            )
+
     def close(self):
         if self.entity_persistence_policy is not None:
             self.entity_persistence_policy.close()
@@ -148,12 +153,15 @@ class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
         if self.log_persistence_policy is not None:
             self.log_persistence_policy.close()
             self.log_persistence_policy = None
+        if self.view_persistence_policy is not None:
+            self.view_persistence_policy.close()
+            self.view_persistence_policy = None
         super(ApplicationWithPersistencePolicies, self).close()
 
 
 class Application(ApplicationWithPersistencePolicies):
     """
-    Hit event sourced application with entity factory and repository.
+    Ping event sourced application with entity factory and repository.
     """
 
     def __init__(self, **kwargs):
@@ -170,9 +178,9 @@ class Application(ApplicationWithPersistencePolicies):
         )
 
     @staticmethod
-    def create_new_example(foo='', a='', b=''):
+    def create_ping(vehicle_id=''):
         """Entity object factory."""
-        return create_new_hit(foo=foo, a=a, b=b)
+        return create_new_hit(vehicle_id=vehicle_id)
 
 
 def construct_application(**kwargs):
