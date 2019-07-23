@@ -4,12 +4,13 @@ from sqlalchemy import case
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_utils import UUIDType
 
-from status.app import db
+from heartbeat.app import db
 
 
 class Vehicle(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(128))
+    id = db.Column(db.String(17), primary_key=True)
+    reg_no = db.Column(db.String(6))
+    customer_id = db.Column(db.Integer())
     heartbeat_ts = db.Column(db.DateTime())
 
     @hybrid_property

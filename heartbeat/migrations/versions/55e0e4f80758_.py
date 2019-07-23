@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 13fe812da9f3
+Revision ID: 55e0e4f80758
 Revises: 
-Create Date: 2019-07-23 02:01:31.446705
+Create Date: 2019-07-23 20:18:17.303527
 
 """
 import sqlalchemy_utils
@@ -10,7 +10,7 @@ from alembic import op
 import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
-revision = '13fe812da9f3'
+revision = '55e0e4f80758'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -28,8 +28,9 @@ def upgrade():
                     )
     op.create_index('index', 'event_source', ['sequence_id', 'position'], unique=True)
     op.create_table('vehicle',
-                    sa.Column('id', sa.Integer(), nullable=False),
-                    sa.Column('name', sa.String(length=128), nullable=True),
+                    sa.Column('id', sa.String(length=17), nullable=False),
+                    sa.Column('reg_no', sa.String(length=6), nullable=True),
+                    sa.Column('customer_id', sa.Integer(), nullable=True),
                     sa.Column('heartbeat_ts', sa.DateTime(), nullable=True),
                     sa.PrimaryKeyConstraint('id')
                     )

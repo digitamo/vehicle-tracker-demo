@@ -2,8 +2,8 @@ from datetime import datetime
 
 from eventsourcing.domain.model.events import subscribe, unsubscribe
 from eventsourcing.infrastructure.eventstore import AbstractEventStore
-from status.model import Vehicle
-from status.app import db
+from heartbeat.model import Vehicle
+from heartbeat.app import db
 
 
 class ViewPersistencePolicy(object):

@@ -7,8 +7,8 @@
 version: "3"
 services:
   web:
-    image: digitamo/status
-    build: status
+    image: digitamo/heartbeat
+    build: heartbeat
     deploy:
       replicas: 4
       resources:

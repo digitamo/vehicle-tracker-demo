@@ -9,8 +9,8 @@ from eventsourcing.infrastructure.sequenceditemmapper import SequencedItemMapper
 from eventsourcing.infrastructure.snapshotting import EventSourcedSnapshotStrategy
 from eventsourcing.utils.transcoding import ObjectJSONDecoder, ObjectJSONEncoder
 
-from status.domain.infrastructure import ExampleRepository
-from status.domain.model import create_new_hit, Ping
+from heartbeat.domain.infrastructure import ExampleRepository
+from heartbeat.domain.model import create_new_hit, Ping
 
 
 # TODO: Try extending `eventsourcing.application.simple.SimpleApplication` instead these.
@@ -135,7 +135,7 @@ class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
             )
 
     def construct_view_persistence_policy(self):
-        from status.domain.policy import ViewPersistencePolicy
+        from heartbeat.domain.policy import ViewPersistencePolicy
 
         if self.entity_event_store:
             return ViewPersistencePolicy(

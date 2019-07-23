@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from status.domain.application import get_application, init_application
+from heartbeat.domain.application import get_application, init_application
 
 # Read DB URI from environment.
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -24,7 +24,7 @@ application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Define database connection.
 db = SQLAlchemy(application)
 
-from status.model import EventSource
+from heartbeat.model import EventSource
 
 migrate = Migrate(application, db)
 
@@ -41,14 +41,14 @@ def init_example_application_with_sqlalchemy():
 
 
 # Define Web application.
-@application.route("/heartbeat_ts/<int:vehicle_id>", methods=['POST'])
+@application.route("/heartbeat/<int:vehicle_id>", methods=['POST'])
 def hello(vehicle_id):
     app = get_application()
     entity_id = app.create_ping(vehicle_id=vehicle_id).id
     return jsonify({'entity_id': entity_id})
 
 
-@application.route("/ping", methods=['GET'])
+@application.route("/heartbeat/ping", methods=['GET'])
 def ping():
     return jsonify({'message': 'pong'})
 
