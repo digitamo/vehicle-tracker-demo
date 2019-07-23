@@ -4,6 +4,6 @@ from eventsourcing.infrastructure.eventsourcedrepository import EventSourcedRepo
 
 class ExampleRepository(EventSourcedRepository, AbstractExampleRepository):
     """
-    Event sourced repository for the Ping domain model entity.
+    Event sourced repository for the Heartbeat domain model entity.
     """
     __page_size__ = 1000

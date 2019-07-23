@@ -3,15 +3,15 @@ from eventsourcing.domain.model.entity import TimestampedVersionedEntity, Entity
 
 
 # NOTE: Consider adding more Events.
-class Ping(EntityWithHashchain, TimestampedVersionedEntity):
+class Heartbeat(EntityWithHashchain, TimestampedVersionedEntity):
     class Event(EntityWithHashchain.Event, TimestampedVersionedEntity.Event):
         """Supertype for events of example entities."""
 
     class Created(Event, EntityWithHashchain.Created, TimestampedVersionedEntity.Created):
-        """Published when an Ping is created."""
+        """Published when an Heartbeat is created."""
 
     def __init__(self, vehicle_id='', **kwargs):
-        super(Ping, self).__init__(**kwargs)
+        super(Heartbeat, self).__init__(**kwargs)
         self._vehicle_id = vehicle_id
 
     @attribute
@@ -23,6 +23,6 @@ def create_new_hit(vehicle_id=''):
     """
     Factory method for hit entities.
 
-    :rtype: Ping
+    :rtype: Heartbeat
     """
-    return Ping.__create__(vehicle_id=vehicle_id)
+    return Heartbeat.__create__(vehicle_id=vehicle_id)

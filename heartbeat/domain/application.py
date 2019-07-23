@@ -10,11 +10,11 @@ from eventsourcing.infrastructure.snapshotting import EventSourcedSnapshotStrate
 from eventsourcing.utils.transcoding import ObjectJSONDecoder, ObjectJSONEncoder
 
 from heartbeat.domain.infrastructure import ExampleRepository
-from heartbeat.domain.model import create_new_hit, Ping
+from heartbeat.domain.model import create_new_hit, Heartbeat
 
 
-# TODO: Try extending `eventsourcing.application.simple.SimpleApplication` instead these.
-# TODO: Strip down Application to only what you need.
+# Application classes are based on event store examples found here:
+# https://github.com/johnbywater/eventsourcing/blob/master/eventsourcing/example/application.py
 
 class ApplicationWithEventStores(ABC):
     """
@@ -140,7 +140,7 @@ class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
         if self.entity_event_store:
             return ViewPersistencePolicy(
                 event_store=self.entity_event_store,
-                persist_event_type=Ping.Created
+                persist_event_type=Heartbeat.Created
             )
 
     def close(self):
@@ -161,7 +161,7 @@ class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
 
 class Application(ApplicationWithPersistencePolicies):
     """
-    Ping event sourced application with entity factory and repository.
+    Heartbeat event sourced application with entity factory and repository.
     """
 
     def __init__(self, **kwargs):
