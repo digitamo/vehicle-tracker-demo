@@ -28,7 +28,7 @@ services:
     networks:
       - webnet
     healthcheck:
-      test: curl --fail http://localhost:80/ping || exit 1
+      test: curl --fail http://localhost:80/heartbeat/ping || exit 1
       interval: 10s
       timeout: 2s
       retries: 5
