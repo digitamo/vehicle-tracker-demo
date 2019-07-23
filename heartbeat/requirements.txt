@@ -1,4 +1,5 @@
+SQLAlchemy-Utils==0.34.1
 Flask-SQLAlchemy==2.4.0
 Flask-Migrate==2.5.0
-gunicorn==19.9.0
 eventsourcing==7.1.4
+gunicorn==19.9.0
