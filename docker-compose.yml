@@ -3,6 +3,7 @@
 
 # NOTE: service discovery is also handled by docker swarm.
 # TODO: Write note on how you would implement auto-scaling.
+# TODO: Add a service for the search microservice.
 
 version: "3"
 services:
@@ -19,19 +20,22 @@ services:
         condition: on-failure
       placement:
         constraints: [node.role == worker]
+    environment:
+      - FLASK_ENV=production
+      - APP_SETTINGS=project.config.ProductionConfig
     # TODO: Use docker secrets for managing secrets.
     # TODO: Use depends on if needed.
     #      secrets:
     #        - secret_code
     ports:
       - "4000:80"
-    networks:
-      - webnet
     healthcheck:
       test: curl --fail http://localhost:80/heartbeat/ping || exit 1
       interval: 10s
       timeout: 2s
       retries: 5
+    networks:
+      - webnet
 
 
   visualizer:

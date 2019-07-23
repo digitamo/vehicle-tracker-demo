@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from flask import abort
 from eventsourcing.domain.model.events import subscribe, unsubscribe
 from eventsourcing.infrastructure.eventstore import AbstractEventStore
 from heartbeat.model import Vehicle
@@ -27,5 +28,8 @@ class ViewPersistencePolicy(object):
     def update_status(event):
         vehicle_id = event.vehicle_id
         vehicle = Vehicle.query.get(vehicle_id)
-        vehicle.heartbeat = datetime.fromtimestamp(event.timestamp)
-        db.session.commit()
+        if vehicle:
+            vehicle.heartbeat = datetime.fromtimestamp(event.timestamp)
+            db.session.commit()
+        else:
+            abort(404)

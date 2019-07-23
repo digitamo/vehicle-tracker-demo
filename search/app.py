@@ -4,18 +4,15 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 
 # Read DB URI from environment.
-basedir = os.path.abspath(os.path.dirname(__file__))
 
-# TODO: Decouple config.
 # TODO: Use postgres.
 # TODO: Use a postgres db engine good for writing operations. and another one for reading.
 
-uri = os.environ.get('DB_URI', 'sqlite://///mnt/workspace/python/tasks/SwedQ/heartbeat/data.sqlite')
-
 # Construct Flask application.
 application = Flask(__name__)
-application.config['SQLALCHEMY_DATABASE_URI'] = uri
-application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+app_settings = os.getenv('APP_SETTINGS')
+application.config.from_object(app_settings)
 
 # Define database connection.
 db = SQLAlchemy(application)
