@@ -2,11 +2,8 @@ from abc import ABC
 
 from eventsourcing.application.policies import PersistencePolicy
 from eventsourcing.domain.model.entity import VersionedEntity
-from eventsourcing.domain.model.events import Logged
-from eventsourcing.domain.model.snapshot import Snapshot
 from eventsourcing.infrastructure.eventstore import EventStore
 from eventsourcing.infrastructure.sequenceditemmapper import SequencedItemMapper
-from eventsourcing.infrastructure.snapshotting import EventSourcedSnapshotStrategy
 from eventsourcing.utils.transcoding import ObjectJSONDecoder, ObjectJSONEncoder
 
 from heartbeat.domain.infrastructure import ExampleRepository
@@ -21,42 +18,18 @@ class ApplicationWithEventStores(ABC):
     Event sourced application object class.
 
     Can construct event stores using given database records.
-    Supports three different event stores: for log events,
-    for entity events, and for snapshot events.
+    Supports three different event stores: for entity events.
     """
 
     def __init__(self, entity_record_manager=None,
-                 log_record_manager=None,
-                 snapshot_record_manager=None,
                  cipher=None,
                  sequenced_item_mapper_class=SequencedItemMapper):
-
         self.entity_event_store = None
         if entity_record_manager:
             self.entity_event_store = self.construct_event_store(
                 event_sequence_id_attr='originator_id',
                 event_position_attr='originator_version',
                 record_manager=entity_record_manager,
-                cipher=cipher,
-                sequenced_item_mapper_class=sequenced_item_mapper_class,
-            )
-
-        self.log_event_store = None
-        if log_record_manager:
-            self.log_event_store = self.construct_event_store(
-                event_sequence_id_attr='originator_id',
-                event_position_attr='timestamp',
-                record_manager=log_record_manager,
-                cipher=cipher,
-                sequenced_item_mapper_class=sequenced_item_mapper_class,
-            )
-
-        self.snapshot_event_store = None
-        if snapshot_record_manager:
-            self.snapshot_event_store = self.construct_event_store(
-                event_sequence_id_attr='originator_id',
-                event_position_attr='originator_version',
-                record_manager=snapshot_record_manager,
                 cipher=cipher,
                 sequenced_item_mapper_class=sequenced_item_mapper_class,
             )
@@ -95,8 +68,6 @@ class ApplicationWithEventStores(ABC):
 
     def close(self):
         self.entity_event_store = None
-        self.log_event_store = None
-        self.snapshot_event_store = None
 
     def __enter__(self):
         return self
@@ -109,8 +80,6 @@ class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
     def __init__(self, **kwargs):
         super(ApplicationWithPersistencePolicies, self).__init__(**kwargs)
         self.entity_persistence_policy = self.construct_entity_persistence_policy()
-        self.snapshot_persistence_policy = self.construct_snapshot_persistence_policy()
-        self.log_persistence_policy = self.construct_log_persistence_policy()
         self.view_persistence_policy = self.construct_view_persistence_policy()
 
     def construct_entity_persistence_policy(self):
@@ -118,20 +87,6 @@ class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
             return PersistencePolicy(
                 event_store=self.entity_event_store,
                 persist_event_type=VersionedEntity.Event,
-            )
-
-    def construct_snapshot_persistence_policy(self):
-        if self.snapshot_event_store:
-            return PersistencePolicy(
-                event_store=self.snapshot_event_store,
-                persist_event_type=Snapshot,
-            )
-
-    def construct_log_persistence_policy(self):
-        if self.log_event_store:
-            return PersistencePolicy(
-                event_store=self.log_event_store,
-                persist_event_type=Logged,
             )
 
     def construct_view_persistence_policy(self):
@@ -147,12 +102,6 @@ class ApplicationWithPersistencePolicies(ApplicationWithEventStores):
         if self.entity_persistence_policy is not None:
             self.entity_persistence_policy.close()
             self.entity_persistence_policy = None
-        if self.snapshot_persistence_policy is not None:
-            self.snapshot_persistence_policy.close()
-            self.snapshot_persistence_policy = None
-        if self.log_persistence_policy is not None:
-            self.log_persistence_policy.close()
-            self.log_persistence_policy = None
         if self.view_persistence_policy is not None:
             self.view_persistence_policy.close()
             self.view_persistence_policy = None
@@ -166,16 +115,8 @@ class Application(ApplicationWithPersistencePolicies):
 
     def __init__(self, **kwargs):
         super(Application, self).__init__(**kwargs)
-        self.snapshot_strategy = None
-        if self.snapshot_event_store:
-            self.snapshot_strategy = EventSourcedSnapshotStrategy(
-                snapshot_store=self.snapshot_event_store,
-            )
         assert self.entity_event_store is not None
-        self.example_repository = ExampleRepository(
-            event_store=self.entity_event_store,
-            snapshot_strategy=self.snapshot_strategy,
-        )
+        self.example_repository = ExampleRepository(event_store=self.entity_event_store)
 
     @staticmethod
     def create_ping(vehicle_id=''):

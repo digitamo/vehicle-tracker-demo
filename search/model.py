@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import sqlalchemy as sa
 from sqlalchemy import case, ForeignKey
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
