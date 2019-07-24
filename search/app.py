@@ -51,7 +51,7 @@ def search():
     return jsonify([i.serialize for i in vehicles])
 
 
-@application.route("/ping", methods=['GET'])
+@application.route("/search/ping", methods=['GET'])
 def ping():
     return jsonify({'message': 'pong'})
 
