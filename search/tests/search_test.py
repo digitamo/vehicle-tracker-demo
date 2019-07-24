@@ -25,16 +25,16 @@ class Search(TestCase):
         vehicles = [
             Vehicle(id="YS2R4X20005399401", reg_no='ABC123', customer=customers[0], heartbeat_ts=datetime.now()),
             Vehicle(id='VLUR4X20009093588', reg_no='DEF456', customer=customers[0],
-                    heartbeat_ts=datetime.strptime("2008-09-03T20:56:35.450686Z", "%Y-%m-%dT%H:%M:%S.%fZ")),
+                    heartbeat_ts=datetime.fromisoformat('2019-07-24T04:51:06.562952')),
             Vehicle(id='VLUR4X20009048066', reg_no='GHI789', customer=customers[0],
-                    heartbeat_ts=datetime.strptime("2015-09-03T20:56:35.450686Z", "%Y-%m-%dT%H:%M:%S.%fZ")),
+                    heartbeat_ts=datetime.fromisoformat('2015-07-24T04:51:06.562952')),
             Vehicle(id='YS2R4X20005388011', reg_no='JKL012', customer=customers[1], heartbeat_ts=datetime.now()),
             Vehicle(id='YS2R4X20005387949', reg_no='MNO345', customer=customers[1],
-                    heartbeat_ts=datetime.strptime("2019-07-03T10:56:35.450686Z", "%Y-%m-%dT%H:%M:%S.%fZ")),
+                    heartbeat_ts=datetime.fromisoformat('2019-07-03T04:51:06.562952')),
             Vehicle(id='YS2R4X20005387765', reg_no='PQR678', customer=customers[2],
-                    heartbeat_ts=datetime.strptime("2018-02-03T20:56:35.450686Z", "%Y-%m-%dT%H:%M:%S.%fZ")),
+                    heartbeat_ts=datetime.fromisoformat('2019-02-24T04:00:06.562952')),
             Vehicle(id='YS2R4X20005387055', reg_no='STU901', customer=customers[2],
-                    heartbeat_ts=datetime.strptime("2019-06-09T20:56:35.450686Z", "%Y-%m-%dT%H:%M:%S.%fZ"))
+                    heartbeat_ts=datetime.fromisoformat('2018-03-24T09:51:06.562952')),
         ]
 
         db.session.add_all(customers)
