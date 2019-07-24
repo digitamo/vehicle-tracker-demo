@@ -10,8 +10,11 @@ RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 EXPOSE 80
-CMD ["flask", "db", "upgrade"]
+#CMD ["flask", "db", "upgrade"]
 
-WORKDIR /
+#WORKDIR /
 
-CMD ["gunicorn", "-b", "0.0.0.0:4000", "heartbeat.app:application"]
+#CMD ["gunicorn", "-b", "0.0.0.0:4000", "heartbeat.app:application"]
+
+RUN ["chmod", "+x", "entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
