@@ -14,6 +14,13 @@ $ docker-machine create --driver virtualbox myvm1
 $ docker-machine create --driver virtualbox myvm2
 ```
 
+#### Setup docker secrets:
+```
+$ echo "secret_pg_password" | docker secret create pg_password -
+$ echo "admin" | docker secret create pg_user -
+$ echo "pg_database" | docker secret create pg_database -
+```
+
 #### Run docker swarm:
 ```
 $ eval $(docker-machine env myvm1)
