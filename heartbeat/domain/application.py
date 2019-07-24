@@ -6,7 +6,7 @@ from eventsourcing.infrastructure.eventstore import EventStore
 from eventsourcing.infrastructure.sequenceditemmapper import SequencedItemMapper
 from eventsourcing.utils.transcoding import ObjectJSONDecoder, ObjectJSONEncoder
 
-from heartbeat.domain.infrastructure import ExampleRepository
+from heartbeat.domain.infrastructure import ApplicationRepository
 from heartbeat.domain.model import create_new_hit, Heartbeat
 
 
@@ -116,7 +116,7 @@ class Application(ApplicationWithPersistencePolicies):
     def __init__(self, **kwargs):
         super(Application, self).__init__(**kwargs)
         assert self.entity_event_store is not None
-        self.example_repository = ExampleRepository(event_store=self.entity_event_store)
+        self.application_repository = ApplicationRepository(event_store=self.entity_event_store)
 
     @staticmethod
     def create_ping(vehicle_id=''):

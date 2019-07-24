@@ -2,7 +2,7 @@ from eventsourcing.example.domainmodel import AbstractExampleRepository
 from eventsourcing.infrastructure.eventsourcedrepository import EventSourcedRepository
 
 
-class ExampleRepository(EventSourcedRepository, AbstractExampleRepository):
+class ApplicationRepository(EventSourcedRepository, AbstractExampleRepository):
     """
     Event sourced repository for the Heartbeat domain model entity.
     """

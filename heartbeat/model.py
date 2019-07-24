@@ -1,7 +1,4 @@
-from datetime import datetime
-
-from sqlalchemy import case, ForeignKey
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import UUIDType
 
@@ -28,7 +25,7 @@ class Customer(db.Model):
     vehicles = relationship("Vehicle", back_populates="customer")
 
 
-class EventSource(db.Model):
+class EventRecord(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     sequence_id = db.Column(UUIDType(), nullable=False)
     position = db.Column(db.BigInteger(), nullable=False)

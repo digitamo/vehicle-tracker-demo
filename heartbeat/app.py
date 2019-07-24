@@ -21,7 +21,7 @@ application.config.from_object(app_settings)
 # Define database connection.
 db = SQLAlchemy(application)
 
-from heartbeat.model import EventSource
+from heartbeat.model import EventRecord, Vehicle
 
 migrate = Migrate(application, db)
 
@@ -31,7 +31,7 @@ migrate = Migrate(application, db)
 def init_example_application_with_sqlalchemy():
     init_application(
         entity_record_manager=SQLAlchemyRecordManager(
-            record_class=EventSource,
+            record_class=EventRecord,
             session=db.session,
         )
     )
