@@ -3,30 +3,32 @@
 
 # NOTE: service discovery is also handled by docker swarm.
 # TODO: Write note on how you would implement auto-scaling.
-# TODO: Add a service for the search microservice.
 
-version: "3"
+version: "3.1"
 services:
-  web:
+  heartbeat:
     image: digitamo/heartbeat
-    build: heartbeat
+    build: ./heartbeat
     deploy:
-      replicas: 4
+      replicas: 2
       resources:
         limits:
           cpus: "0.1"
           memory: 50M
       restart_policy:
         condition: on-failure
-      placement:
-        constraints: [node.role == worker]
+#      placement:
+#        constraints: [node.role == worker]
     environment:
       - FLASK_ENV=production
-      - APP_SETTINGS=project.config.ProductionConfig
-    # TODO: Use docker secrets for managing secrets.
-    # TODO: Use depends on if needed.
-    #      secrets:
-    #        - secret_code
+      - APP_SETTINGS=heartbeat.config.ProductionConfig
+      - POSTGRES_USER_FILE=/run/secrets/pg_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/pg_password
+      - POSTGRES_DB_FILE=/run/secrets/pg_database
+    secrets:
+      - pg_password
+      - pg_user
+      - pg_database
     ports:
       - "4000:80"
     healthcheck:
@@ -35,8 +37,62 @@ services:
       timeout: 2s
       retries: 5
     networks:
-      - webnet
+      - back-net
+    depends_on:
+      - postgres
 
+  search:
+    image: digitamo/search
+    build: ./search
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+#      placement:
+#        constraints: [node.role == worker]
+    environment:
+      - FLASK_ENV=production
+      - APP_SETTINGS=search.config.ProductionConfig
+      - POSTGRES_USER_FILE=/run/secrets/pg_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/pg_password
+      - POSTGRES_DB_FILE=/run/secrets/pg_database
+    ports:
+      - "4001:80"
+    healthcheck:
+      test: curl --fail http://localhost:80/search/ping || exit 1
+      interval: 10s
+      timeout: 2s
+      retries: 5
+    networks:
+      - back-net
+    depends_on:
+      - postgres
+
+
+  postgres:
+    image: postgres
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+    environment:
+      - POSTGRES_USER_FILE=/run/secrets/pg_user
+      - POSTGRES_PASSWORD_FILE=/run/secrets/pg_password
+      - POSTGRES_DB_FILE=/run/secrets/pg_database
+    secrets:
+      - pg_password
+      - pg_user
+      - pg_database
+    expose:
+      - 5432
+    networks:
+      - back-net
 
   visualizer:
     image: dockersamples/visualizer:latest
@@ -48,6 +104,18 @@ services:
       placement:
         constraints: [node.role == manager]
     networks:
-      - webnet
+      - back-net
+
+volumes:
+  db-data:
+
 networks:
-  webnet:
+  back-net:
+
+secrets:
+  pg_user:
+    external: true
+  pg_password:
+    external: true
+  pg_database:
+    external: true

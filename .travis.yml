@@ -1,0 +1,17 @@
+matrix:
+  include:
+    - language: python
+      python: 3.6
+      before_script:
+        - cd heartbeat
+      script:
+        - pip install -r requirements.txt
+        - nosetests
+
+    - language: python
+      python: 3.6
+      before_script:
+        - cd search
+        script:
+          - pip install -r requirements.txt
+          - nosetests

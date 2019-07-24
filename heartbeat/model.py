@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import UUIDType
 
-from heartbeat.app import db
+from .app import db
 
 
 # NOTE: Consider Creating an internal data access micorservice.
