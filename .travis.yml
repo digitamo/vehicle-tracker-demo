@@ -2,7 +2,8 @@
 ---
 matrix:
   include:
-    - language: python
+    - dist: xenial   # required for Python >= 3.7
+      language: python
       python: 3.7
       services:
         - docker
@@ -14,7 +15,8 @@ matrix:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t digitamo/heartbeat .
         - docker push digitamo/heartbeat
-    - language: python
+    - dist: xenial   # required for Python >= 3.7
+      language: python
       python: 3.7
       services:
         - docker
