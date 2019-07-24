@@ -18,19 +18,6 @@ class Vehicle(db.Model):
     customer = relationship("Customer", back_populates="vehicles")
     heartbeat_ts = db.Column(db.DateTime())
 
-    @hybrid_property
-    def online(self):
-        current_timestamp = datetime.now().timestamp()
-        return current_timestamp - self.heartbeat_ts.timestamp() < 59
-
-    @online.expression
-    def dominance(self):
-        current_timestamp = datetime.now().timestamp()
-        return case(
-            [(current_timestamp - self.heartbeat_ts.timestamp() < 59, True), ],
-            else_=False
-        )
-
 
 class Customer(db.Model):
     __tablename__ = 'customer'

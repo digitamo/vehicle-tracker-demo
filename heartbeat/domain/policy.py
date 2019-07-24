@@ -29,7 +29,7 @@ class ViewPersistencePolicy(object):
         vehicle_id = event.vehicle_id
         vehicle = Vehicle.query.get(vehicle_id)
         if vehicle:
-            vehicle.heartbeat = datetime.fromtimestamp(event.timestamp)
+            vehicle.heartbeat_ts = datetime.fromtimestamp(event.timestamp)
             db.session.commit()
         else:
             abort(404)
