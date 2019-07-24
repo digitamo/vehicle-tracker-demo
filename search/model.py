@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import sqlalchemy as sa
 from sqlalchemy import case, ForeignKey
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -20,14 +21,19 @@ class Vehicle(db.Model):
 
     @hybrid_property
     def online(self):
-        current_timestamp = datetime.now().timestamp()
-        return current_timestamp - self.heartbeat_ts.timestamp() < 59
+        if self.heartbeat_ts is not None:
+            current_timestamp = datetime.now().timestamp()
+            return current_timestamp - self.heartbeat_ts.timestamp() < 59
+        else:
+            return False
 
     @online.expression
-    def dominance(self):
+    def online(cls):
+        # NOTE: Using queries on hybrid expression is database dependent.
+        # NOTE: Switch to hybrid properties if ended up using postgres.
         current_timestamp = datetime.now().timestamp()
         return case(
-            [(current_timestamp - self.heartbeat_ts.timestamp() < 59, True), ],
+            [(cls.heartbeat_ts is not None and (current_timestamp - cls.heartbeat_ts.timestamp() < 59), True), ],
             else_=False
         )
 
@@ -38,6 +44,7 @@ class Vehicle(db.Model):
             'id': self.id,
             'registration number': self.reg_no,
             'heartbeat_ts': dump_datetime(self.heartbeat_ts),
+            'online': self.online,
             'customer': self.customer.serialize
         }
 

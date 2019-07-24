@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from flask import Flask, jsonify, request
@@ -19,21 +20,33 @@ db = SQLAlchemy(application)
 from search.model import Customer, Vehicle
 
 
+def filter_by_online(online_str):
+    online = True if online_str == 'true' else False
+    current_time = datetime.datetime.now()
+    minute_ago = current_time - datetime.timedelta(minutes=1)
+
+    if online:
+        return Vehicle.query.filter(Vehicle.heartbeat_ts > minute_ago)
+    else:
+        return Vehicle.query.filter(Vehicle.heartbeat_ts < minute_ago)
+
+
 @application.route("/search", methods=['GET'])
 def search():
     customer_name = request.args.get('customer_name')
-    reg_no = request.args.get('reg_no')
+    online = request.args.get('online')
 
     vehicles = []
 
     # TODO: Add pagination.
-    if customer_name and reg_no:
-        vehicles = Vehicle.query.filter(Vehicle.reg_no.contains(reg_no))
+    if customer_name is not None and online is not None:
+        vehicles = filter_by_online(online)
         vehicles = vehicles.join(Customer).filter(Customer.name.contains(customer_name)).all()
-    if customer_name:
+    elif customer_name is not None:
         vehicles = Vehicle.query.join(Customer).filter(Customer.name.contains(customer_name)).all()
-    if reg_no:
-        vehicles = Vehicle.query.filter(Vehicle.reg_no.contains(reg_no)).all()
+    elif online is not None:
+        vehicles = filter_by_online(online)
+        vehicles = vehicles.all()
 
     return jsonify([i.serialize for i in vehicles])
 
