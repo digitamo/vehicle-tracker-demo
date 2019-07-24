@@ -5,7 +5,7 @@ from flask import Flask, jsonify
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from .domain.application import get_application, init_application
+from heartbeat.domain.application import get_application, init_application
 
 # Read DB URI from environment.
 
@@ -21,7 +21,7 @@ application.config.from_object(app_settings)
 # Define database connection.
 db = SQLAlchemy(application)
 
-from .model import EventRecord
+from heartbeat.model import EventRecord
 
 migrate = Migrate(application, db)
 

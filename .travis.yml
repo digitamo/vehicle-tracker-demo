@@ -1,17 +1,28 @@
+# TODO: Add `SQLALCHEMY_DATABASE_URI` as an environmental variable.
 ---
 matrix:
   include:
-    - before_script:
+    - language: python
+      python: 3.7.1
+      services:
+        - docker
+      before_script:
         - "cd heartbeat"
-      language: python
-      python: 3.7.1
       script:
         - "pip install -r requirements.txt"
         - nosetests
-    - before_script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t digitamo/heartbeat .
+        - docker push digitamo/heartbeat
+    - language: python
+      python: 3.7.1
+      services:
+        - docker
+      before_script:
         - "cd search"
-      language: python
-      python: 3.7.1
       script:
         - "pip install -r requirements.txt"
         - nosetests
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t digitamo/heartbeat .
+        - docker push digitamo/heartbeat
