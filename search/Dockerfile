@@ -1,7 +1,7 @@
 FROM python:3.7
 
-COPY . /search
-WORKDIR /search
+COPY . /
+WORKDIR /
 
 RUN apt-get update && apt-get install -y curl
 RUN apt-get update && apt-get install -y gcc python3-dev musl-dev libpq-dev
@@ -12,4 +12,4 @@ EXPOSE 80
 
 WORKDIR /
 
-CMD ["gunicorn", "-b", "0.0.0.0:4000", "app:application"]
+CMD ["gunicorn", "-b", "0.0.0.0:4000", "search.app:application"]

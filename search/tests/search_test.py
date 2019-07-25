@@ -47,25 +47,25 @@ class Search(TestCase):
         db.drop_all()
 
     def test_search_with_customer_name(self):
-        response = self.client.get('/search?customer_name=kalles')
+        response = self.client.get('/?customer_name=kalles')
         self.assertEqual(len(response.json), 3)
 
-        response = self.client.get('/search?customer_name=Bulk')
+        response = self.client.get('/?customer_name=Bulk')
         self.assertEqual(len(response.json), 2)
 
-        response = self.client.get('/search?customer_name=Värdetransporter')
+        response = self.client.get('/?customer_name=Värdetransporter')
         self.assertEqual(len(response.json), 2)
 
     def test_search_with_online_status(self):
-        response = self.client.get('/search?online=true')
+        response = self.client.get('/?online=true')
         self.assertEqual(len(response.json), 2)
 
-        response = self.client.get('/search?online=false')
+        response = self.client.get('/?online=false')
         self.assertEqual(len(response.json), 5)
 
     def test_search_with_online_status_and_customer_name(self):
-        response = self.client.get('/search?online=true&customer_name=Bulk')
+        response = self.client.get('/?online=true&customer_name=Bulk')
         self.assertEqual(len(response.json), 1)
 
-        response = self.client.get('/search?online=false&customer_name=Värdetransporter')
+        response = self.client.get('/?online=false&customer_name=Värdetransporter')
         self.assertEqual(len(response.json), 2)

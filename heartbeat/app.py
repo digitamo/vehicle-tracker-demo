@@ -31,14 +31,14 @@ def init_example_application_with_sqlalchemy():
 
 
 # Define Web application.
-@application.route("/heartbeat/<string:vehicle_id>", methods=['POST'])
+@application.route("/<string:vehicle_id>", methods=['POST'])
 def hello(vehicle_id):
     app = get_application()
     entity_id = app.create_ping(vehicle_id=vehicle_id).id
     return jsonify({'entity_id': entity_id})
 
 
-@application.route("/heartbeat/ping", methods=['GET'])
+@application.route("/ping", methods=['GET'])
 def ping():
     return jsonify({'message': 'pong'})
 
