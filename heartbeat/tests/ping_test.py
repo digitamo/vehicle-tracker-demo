@@ -10,5 +10,5 @@ class Ping(TestCase):
         return application
 
     def test_ping_should_return_pong_message(self):
-        response = self.client.get('/ping')
+        response = self.client.get('/heartbeat/ping')
         self.assertEqual(response.json, {'message': 'pong'})

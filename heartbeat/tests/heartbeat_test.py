@@ -48,17 +48,17 @@ class HeartBeat(TestCase):
         db.drop_all()
 
     def test_heartbeat_should_return_entity_id(self):
-        response = self.client.post('/VLUR4X20009048066')
+        response = self.client.post('/heartbeat/VLUR4X20009048066')
         entity_id = response.json.get('entity_id')
         self.assertIsNotNone(entity_id)
 
     def test_heartbeat_should_init_application(self):
-        self.client.post('/VLUR4X20009048066')
+        self.client.post('/heartbeat/VLUR4X20009048066')
         eventsourcing_app = get_application()
         self.assertIsNotNone(eventsourcing_app)
 
     def test_heartbeat_should_store_entity_in_application_repository(self):
-        response = self.client.post('/VLUR4X20009048066')
+        response = self.client.post('/heartbeat/VLUR4X20009048066')
         entity_id = response.json.get('entity_id')
         eventsourcing_application = get_application()
         application_repository = eventsourcing_application.application_repository
@@ -69,12 +69,12 @@ class HeartBeat(TestCase):
         self.assertEqual(entity.vehicle_id, 'VLUR4X20009048066')
 
     def test_heartbeat_should_store_event_in_event_source_table(self):
-        self.client.post('/VLUR4X20009048066')
+        self.client.post('/heartbeat/VLUR4X20009048066')
         event_source = db.session.query(EventRecord).first()
         self.assertIsNotNone(event_source)
 
     def test_heartbeat_should_store_vehicle_id_in_event_source_table(self):
-        self.client.post('/VLUR4X20009048066')
+        self.client.post('/heartbeat/VLUR4X20009048066')
         event_source = db.session.query(EventRecord).first()
         state = event_source.state
         state_data = json.loads(state)
@@ -82,20 +82,20 @@ class HeartBeat(TestCase):
         self.assertEqual(vehicle_id, 'VLUR4X20009048066')
 
     def test_heartbeat_should_update_vehicle_heartbeat_ts_in_view_table(self):
-        self.client.post('/VLUR4X20009048066')
+        self.client.post('/heartbeat/VLUR4X20009048066')
         vehicle = db.session.query(Vehicle).get('VLUR4X20009048066')
         old_heartbeat_ts = datetime.fromisoformat('2015-07-24T04:51:06.562952')
 
         self.assertNotEqual(vehicle.heartbeat_ts, old_heartbeat_ts)
 
     def test_heartbeat_should_write_vehicle_heartbeat_ts_in_view_table(self):
-        self.client.post('/YS2R4X20005387949')
+        self.client.post('/heartbeat/YS2R4X20005387949')
         vehicle = db.session.query(Vehicle).get('VLUR4X20009048066')
 
         self.assertIsNotNone(vehicle.heartbeat_ts)
 
     def test_heartbeat_with_non_existing_vehicle_should_return_404(self):
-        response = self.client.post('/dummy_value')
+        response = self.client.post('/heartbeat/dummy_value')
 
         self.assertEqual(response.status_code, 404)
 

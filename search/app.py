@@ -25,7 +25,7 @@ def filter_by_online(online_str):
         return Vehicle.query.filter(Vehicle.heartbeat_ts < minute_ago)
 
 
-@application.route("/", methods=['GET'])
+@application.route("/search", methods=['GET'])
 def search():
     customer_name = request.args.get('customer_name')
     online = request.args.get('online')
@@ -45,7 +45,7 @@ def search():
     return jsonify([i.serialize for i in vehicles])
 
 
-@application.route("/ping", methods=['GET'])
+@application.route("/search/ping", methods=['GET'])
 def ping():
     return jsonify({'message': 'pong'})
 
