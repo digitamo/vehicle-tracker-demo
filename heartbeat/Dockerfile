@@ -4,8 +4,8 @@ FROM python:3.7
 COPY . /heartbeat
 WORKDIR /heartbeat
 
-RUN apk update && apk add curl
-RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+RUN apt-get update && apt-get install curl
+RUN apt-get update && apt-get install postgresql-dev gcc python3-dev musl-dev
 
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
