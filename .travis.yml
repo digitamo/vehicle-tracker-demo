@@ -26,5 +26,5 @@ matrix:
         - "pip install -r requirements.txt"
         - nosetests
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker build -t digitamo/heartbeat .
-        - docker push digitamo/heartbeat
+        - docker build -t digitamo/search .
+        - docker push digitamo/search
