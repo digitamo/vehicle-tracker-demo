@@ -4,12 +4,6 @@ import os
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 
-# Read DB URI from environment.
-
-# TODO: Use postgres.
-# TODO: Use a postgres db engine good for writing operations. and another one for reading.
-
-# Construct Flask application.
 application = Flask(__name__)
 
 app_settings = os.getenv('APP_SETTINGS')

@@ -7,13 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from heartbeat.domain.application import get_application, init_application
 
-# Read DB URI from environment.
-
-# TODO: Use postgres.
-# TODO: Use a postgres db engine good for writing operations. and another one for reading.
-
-
-# Construct Flask application.
 application = Flask(__name__)
 
 app_settings = os.getenv('APP_SETTINGS')

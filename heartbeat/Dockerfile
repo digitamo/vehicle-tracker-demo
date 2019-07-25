@@ -1,5 +1,4 @@
 FROM python:3.7
-# NOTE: Consider using a base image and a final image.
 
 COPY . /heartbeat
 WORKDIR /heartbeat

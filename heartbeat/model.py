@@ -26,8 +26,7 @@ class Customer(db.Model):
 
 
 class EventRecord(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    sequence_id = db.Column(UUIDType(), nullable=False)
+    sequence_id = db.Column(UUIDType(), nullable=False, primary_key=True)
     position = db.Column(db.BigInteger(), nullable=False)
     topic = db.Column(db.String(255), nullable=False)
     state = db.Column(db.Text(), nullable=False)

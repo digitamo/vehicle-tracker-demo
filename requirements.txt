@@ -1,2 +1,0 @@
--r search/requirements.txt
--r heartbeat/requirements.txt
