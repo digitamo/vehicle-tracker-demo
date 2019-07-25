@@ -19,12 +19,11 @@ class ProductionConfig:
         POSTGRES_PASSWORD = file.read()
     with open(os.environ.get('POSTGRES_DB_FILE'), 'r') as file:
         POSTGRES_DB = file.read()
-        
-    DB_HOST = 'postgres'
-    DB_PORT = '5432'
-    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{user}:{passwd}@{host}:{port}/{db}'.format(
+
+    POSTGRES_URL = 'postgres:5432'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
         user=POSTGRES_USER,
-        passwd=POSTGRES_PASSWORD,
-        host=DB_HOST,
-        port=DB_PORT,
-        db=POSTGRES_DB)
+        pw=POSTGRES_PASSWORD,
+        url=POSTGRES_URL,
+        db=POSTGRES_DB
+    )
