@@ -8,8 +8,6 @@ RUN apt-get update && apt-get install -y gcc python3-dev musl-dev libpq-dev
 
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-EXPOSE 80
-
 WORKDIR /
 
 CMD ["gunicorn", "-b", "0.0.0.0:4000", "heartbeat.app:application"]

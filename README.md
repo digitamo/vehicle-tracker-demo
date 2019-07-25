@@ -45,9 +45,6 @@ $ docker stack deploy -c docker-compose.yml <stack-name>
 #### Run DB migrations:
 ```
 $ docker exec -ti <stack-name>_heartbeat.1.$(docker service ps -f 'name=<stack-name>_heartbeat.1' <stack-name>_heartbeat -q --no-trunc | head -n1) /bin/bash
-    > export POSTGRES_PASSWORD=secret_pg_password
-    > export POSTGRES_DB=pg_database
-    > export POSTGRES_PASSWORD=secret_pg_password
     > cd heartbeat
     > flask db upgrade
 ```

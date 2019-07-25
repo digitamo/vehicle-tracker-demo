@@ -10,4 +10,4 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
 WORKDIR /
 
-CMD ["gunicorn", "-b", "0.0.0.0:4000", "app:application"]
+CMD ["gunicorn", "-b", "0.0.0.0:4000", "search.app:application"]
