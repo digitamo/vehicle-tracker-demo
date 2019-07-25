@@ -14,11 +14,11 @@ class ProductionConfig:
     # NOTE: Uncomment this when using postgres.
     # SQLALCHEMY_DATABASE_URI = f'postgres://{USER}:{PASSWORD}@db:5432/users'
     with open(os.environ.get('POSTGRES_USER_FILE'), 'r') as file:
-        POSTGRES_USER = file.read()
+        POSTGRES_USER = file.read().strip()
     with open(os.environ.get('POSTGRES_PASSWORD_FILE'), 'r') as file:
-        POSTGRES_PASSWORD = file.read()
+        POSTGRES_PASSWORD = file.read().strip()
     with open(os.environ.get('POSTGRES_DB_FILE'), 'r') as file:
-        POSTGRES_DB = file.read()
+        POSTGRES_DB = file.read().strip()
 
     POSTGRES_URL = 'postgres:5432'
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(
