@@ -5,7 +5,7 @@ COPY . /heartbeat
 WORKDIR /heartbeat
 
 RUN apt-get update && apt-get install curl
-RUN apt-get update && apt-get install postgresql-dev gcc python3-dev musl-dev
+RUN apt-get update && apt-get install gcc python3-dev musl-dev libpq-dev
 
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
