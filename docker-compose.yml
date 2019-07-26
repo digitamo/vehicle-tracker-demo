@@ -79,6 +79,8 @@ services:
         condition: on-failure
       placement:
         constraints: [node.role == manager]
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_USER_FILE=/run/secrets/pg_user
       - POSTGRES_PASSWORD_FILE=/run/secrets/pg_password
@@ -87,9 +89,8 @@ services:
       - pg_password
       - pg_user
       - pg_database
-    #  TODO: Use a volume to persist data.
-    #    volumes:
-    #      - ./postgres-data:/var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     networks:
       - back-net
 
@@ -125,7 +126,7 @@ services:
       - back-net
 
 volumes:
-  db-data:
+  pgdata:
 
 networks:
   back-net:
