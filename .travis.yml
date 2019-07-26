@@ -8,10 +8,11 @@ matrix:
       cache: pip
       services:
         - docker
-      before_script:
+      before_install:
         - "cd heartbeat"
-      script:
+      install:
         - "pip install -r requirements.txt"
+      script:
         - nosetests
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t digitamo/heartbeat .
@@ -23,10 +24,11 @@ matrix:
       cache: pip
       services:
         - docker
-      before_script:
-        - "cd search"
-      script:
+      before_install:
+        - "cd heartbeat"
+      install:
         - "pip install -r requirements.txt"
+      script:
         - nosetests
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t digitamo/search .
@@ -48,4 +50,4 @@ matrix:
       install:
         - npm install
       script:
-        - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
+        - npm run test -- --watch=false --no-progress --browsers=ChromeHeadless
