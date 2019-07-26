@@ -2,9 +2,11 @@ import datetime
 import os
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
 application = Flask(__name__)
+CORS(application)
 
 app_settings = os.getenv('APP_SETTINGS')
 application.config.from_object(app_settings)

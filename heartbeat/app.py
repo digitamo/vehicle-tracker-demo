@@ -2,6 +2,7 @@ import os
 
 from eventsourcing.infrastructure.sqlalchemy.manager import SQLAlchemyRecordManager
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
@@ -11,6 +12,7 @@ application = Flask(__name__)
 
 app_settings = os.getenv('APP_SETTINGS')
 application.config.from_object(app_settings)
+CORS(application)
 # Define database connection.
 db = SQLAlchemy(application)
 
