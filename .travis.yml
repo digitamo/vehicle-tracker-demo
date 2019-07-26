@@ -43,7 +43,7 @@ matrix:
             - google-chrome
           packages:
             - google-chrome-stable
-      before_script:
+      before_install:
         - "cd front-end"
       install:
         - npm install
