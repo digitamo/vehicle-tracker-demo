@@ -1,10 +1,11 @@
-# TODO: Add `SQLALCHEMY_DATABASE_URI` as an environmental variable.
 ---
 matrix:
   include:
     - dist: xenial   # required for Python >= 3.7
+      sudo: false
       language: python
       python: 3.7
+      cache: pip
       services:
         - docker
       before_script:
@@ -16,8 +17,10 @@ matrix:
         - docker build -t digitamo/heartbeat .
         - docker push digitamo/heartbeat
     - dist: xenial   # required for Python >= 3.7
+      sudo: false
       language: python
       python: 3.7
+      cache: pip
       services:
         - docker
       before_script:
@@ -28,3 +31,19 @@ matrix:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t digitamo/search .
         - docker push digitamo/search
+
+    - dist: trusty
+      sudo: false
+      language: node_js
+      node_js: '10'
+      cache: npm
+      addons:
+        apt:
+          sources:
+            - google-chrome
+          packages:
+            - google-chrome-stable
+      install:
+        - npm install
+      script:
+        - npm run test -- --watch=false --no-progress --browsers=ChromeHeadlessNoSandbox
