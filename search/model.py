@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from sqlalchemy import case, ForeignKey
+import sqlalchemy
+from sqlalchemy import case, ForeignKey, func
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 
@@ -27,15 +28,15 @@ class Vehicle(db.Model):
         else:
             return False
 
-    @online.expression
-    def online(cls):
-        # NOTE: Using queries on hybrid expression is database dependent.
-        # NOTE: Switch to hybrid properties if ended up using postgres.
-        current_timestamp = datetime.now().timestamp()
-        return case(
-            [(cls.heartbeat_ts is not None and (current_timestamp - cls.heartbeat_ts.timestamp() < 59), True), ],
-            else_=False
-        )
+    # @online.expression
+    # def online(cls):
+    #     # NOTE: Using queries on hybrid expression is database dependent.
+    #
+    #     min_since_heartbeat = sqlalchemy.func.trunc((
+    #             sqlalchemy.extract('epoch', datetime.utcnow()) -
+    #             sqlalchemy.extract('epoch', cls.heartbeat_ts)
+    #     ))
+    #     return min_since_heartbeat < 1
 
     @property
     def serialize(self):
@@ -57,6 +58,14 @@ class Customer(db.Model):
     name = db.Column(db.String())
     address = db.Column(db.String())
     vehicles = relationship("Vehicle", back_populates="customer")
+
+    @hybrid_property
+    def name_lower(self):
+        return self.name.lower()
+
+    @name_lower.expression
+    def name_lower(cls):
+        return func.lower(cls.name)
 
     @property
     def serialize(self):

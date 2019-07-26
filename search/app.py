@@ -4,7 +4,7 @@ import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 application = Flask(__name__)
 CORS(application)
@@ -39,9 +39,9 @@ def search():
     # TODO: Add pagination.
     if customer_name is not None and online is not None:
         vehicles = filter_by_online(online)
-        vehicles = vehicles.join(Customer).filter(Customer.name.ilike('%' + customer_name + '%')).all()
+        vehicles = vehicles.join(Customer).filter(Customer.name_lower.contains(func.lower(customer_name))).all()
     elif customer_name is not None:
-        vehicles = Vehicle.query.join(Customer).filter(Customer.name.contains(customer_name)).all()
+        vehicles = Vehicle.query.join(Customer).filter(Customer.name_lower.contains(func.lower(customer_name))).all()
     elif online is not None:
         vehicles = filter_by_online(online)
         vehicles = vehicles.all()
