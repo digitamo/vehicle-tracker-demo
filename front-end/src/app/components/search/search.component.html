@@ -2,11 +2,18 @@
 
   <div class="vehicles__search">
     <mat-form-field class="vehicle__search-field" floatLabel="never">
-      <input matInput [(ngModel)]="customerName" placeholder="customer name" autocomplete="off"
-             (keyup)="applyFilter()">
+      <input matInput [(ngModel)]="customerName" placeholder="Customer name" autocomplete="off"
+             (ngModelChange)="applyFilter()">
     </mat-form-field>
 
-    <mat-checkbox [(ngModel)]="online" (click)="applyFilter()">online</mat-checkbox>
+    <mat-form-field class="vehicle__select-field" floatLabel="never">
+      <mat-select placeholder="Online status" [(ngModel)]="online" (ngModelChange)="applyFilter()">
+        <mat-option>None</mat-option>
+        <mat-option value="true">Online</mat-option>
+        <mat-option value="false">Offline</mat-option>
+      </mat-select>
+    </mat-form-field>
+
 
   </div>
 

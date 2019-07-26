@@ -9,9 +9,9 @@ import {Vehicle} from '../../models/vehicle';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-  private listData: MatTableDataSource<any>;
-  private customerName: string;
-  private online: boolean;
+  public listData: MatTableDataSource<Vehicle>;
+  public customerName: string;
+  public online: string;
   public displayedColumns: string[] = ['id', 'reg-no', 'customer', 'online'];
 
 
@@ -23,9 +23,8 @@ export class SearchComponent implements OnInit {
 
   applyFilter() {
     this.apiService.search(this.customerName, this.online).subscribe(
-      (vehicles: Array<Vehicle>) => {
-        console.log('data >> ', vehicles);
-        this.listData = new MatTableDataSource<any>(vehicles);
+      (vehicles: Vehicle[]) => {
+        this.listData = new MatTableDataSource<Vehicle>(vehicles);
       }
     );
   }

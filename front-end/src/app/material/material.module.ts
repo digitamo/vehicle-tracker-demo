@@ -12,7 +12,7 @@ import * as Material from '@angular/material';
     Material.MatButtonModule,
     Material.MatTableModule,
     Material.MatSortModule,
-    Material.MatCheckboxModule,
+    Material.MatSelectModule,
     Material.MatIconModule
   ],
   exports: [
@@ -23,7 +23,7 @@ import * as Material from '@angular/material';
     Material.MatButtonModule,
     Material.MatTableModule,
     Material.MatSortModule,
-    Material.MatCheckboxModule,
+    Material.MatSelectModule,
     Material.MatIconModule
   ],
   declarations: []
