@@ -8,6 +8,7 @@ from search.utils import dump_datetime
 from .app import db
 
 
+# TODO: Use an actual view for these tables.
 class Vehicle(db.Model):
     __tablename__ = 'vehicle'
     __table_args__ = {'info': dict(is_view=True)}

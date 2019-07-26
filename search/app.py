@@ -4,6 +4,7 @@ import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 
 application = Flask(__name__)
 CORS(application)
@@ -24,7 +25,8 @@ def filter_by_online(online_str):
     if online:
         return Vehicle.query.filter(Vehicle.heartbeat_ts > minute_ago)
     else:
-        return Vehicle.query.filter(Vehicle.heartbeat_ts < minute_ago)
+        # noinspection PyComparisonWithNone
+        return Vehicle.query.filter(or_(Vehicle.heartbeat_ts == None, Vehicle.heartbeat_ts < minute_ago))
 
 
 @application.route("/search", methods=['GET'])
@@ -37,7 +39,7 @@ def search():
     # TODO: Add pagination.
     if customer_name is not None and online is not None:
         vehicles = filter_by_online(online)
-        vehicles = vehicles.join(Customer).filter(Customer.name.contains(customer_name)).all()
+        vehicles = vehicles.join(Customer).filter(Customer.name.ilike('%' + customer_name + '%')).all()
     elif customer_name is not None:
         vehicles = Vehicle.query.join(Customer).filter(Customer.name.contains(customer_name)).all()
     elif online is not None:
