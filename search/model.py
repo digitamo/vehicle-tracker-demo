@@ -41,7 +41,7 @@ class Vehicle(db.Model):
         """Return object data in easily serializable format"""
         return {
             'id': self.id,
-            'registration number': self.reg_no,
+            'reg_no': self.reg_no,
             'heartbeat_ts': dump_datetime(self.heartbeat_ts),
             'online': self.online,
             'customer': self.customer.serialize
