@@ -5,6 +5,7 @@ from sqlalchemy_utils import UUIDType
 from .app import db
 
 
+# NOTE: Consider using view for date representations.
 # NOTE: Consider Creating an internal data access micorservice.
 class Vehicle(db.Model):
     __tablename__ = 'vehicle'

@@ -9,7 +9,7 @@ matrix:
       services:
         - docker
       before_install:
-        - "cd heartbeat"
+        - "cd back-end/heartbeat"
       install:
         - "pip install -r requirements.txt"
       script:
@@ -25,7 +25,7 @@ matrix:
       services:
         - docker
       before_install:
-        - "cd search"
+        - "cd back-end/search"
       install:
         - "pip install -r requirements.txt"
       script:
