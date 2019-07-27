@@ -2,6 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {ApiService} from '../../services/api.service';
 import {MatTableDataSource} from '@angular/material';
 import {Vehicle} from '../../models/vehicle';
+import Timer = NodeJS.Timer;
 
 @Component({
   selector: 'app-search',
@@ -14,7 +15,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   public online: string;
   public displayedColumns: string[] = ['id', 'reg-no', 'customer', 'online'];
 
-  private readonly intervalId: number;
+  private readonly intervalId: Timer;
 
   constructor(private apiService: ApiService) {
     this.intervalId = setInterval(() => this.applyFilter(), 60000)
