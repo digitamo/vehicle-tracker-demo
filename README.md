@@ -52,3 +52,26 @@ $ docker exec -ti <stack-name>_heartbeat.1.$(docker service ps -f 'name=<stack-n
 ### Import dummy data.
 
 ### Update angular environment.
+
+### Running integration and automation tests.
+
+- Install dependencies
+```
+$ cd tests
+& pip install -r requirements
+```
+
+- Install chrome driver for selenium:
+    
+    If you're running ubuntu you can use this:
+    ```
+       $ wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
+       $ unzip chromedriver_linux64.zip
+       $ sudo mv chromedriver /usr/bin/chromedriver
+       $ sudo chown root:root /usr/bin/chromedriver
+       $ sudo chmod +x /usr/bin/chromedriver
+    ```
+  `NOTE: ` Driver version must match your chrome version.  
+    
+    if not follow the drivers part of this guide for installing chrome driver [here](https://selenium-python.readthedocs.io/installation.html#downloading-python-bindings-for-selenium). 
+

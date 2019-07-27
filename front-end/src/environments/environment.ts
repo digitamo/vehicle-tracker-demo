@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiBase: 'http://192.168.4.5/',
+  // apiBase: 'http://192.168.4.5/',
+  apiBase: 'http://197.162.249.146/',
 };
 
 /*
