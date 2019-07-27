@@ -9,7 +9,7 @@ from search.model import Customer, Vehicle
 class Search(TestCase):
 
     def create_app(self):
-        # NOTE: By default flask will use in memory sqlite but it's better to use an application factory and generate an
+        # NOTE: By default flask will use in memory sqlite but it'scheduler better to use an application factory and generate an
         # application for testing purposes with test config.
         return application
 

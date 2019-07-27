@@ -50,3 +50,5 @@ $ docker exec -ti <stack-name>_heartbeat.1.$(docker service ps -f 'name=<stack-n
 ```
 
 ### Import dummy data.
+
+### Update angular environment.
