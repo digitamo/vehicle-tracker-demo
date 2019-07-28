@@ -1,14 +1,13 @@
 # NOTE: Load balancing is handled by docker swarm, But you can use an external load balancer
 # link: https://docs.docker.com/engine/swarm/ingress/
 
-# NOTE: service discovery is also handled by docker swarm.
 # TODO: Write note on how you would implement auto-scaling.
 
-version: "3.1"
+version: "3.7"
 services:
   heartbeat:
     image: digitamo/heartbeat
-    build: ./heartbeat
+    build: back-end/heartbeat
     deploy:
       replicas: 2
       resources:
@@ -17,11 +16,13 @@ services:
           memory: 50M
       restart_policy:
         condition: on-failure
-#      placement:
-#        constraints: [node.role == worker]
+      placement:
+        constraints:
+          - node.role == worker
+          - node.labels.resource != db
     environment:
       - FLASK_ENV=production
-      - APP_SETTINGS=heartbeat.config.ProductionConfig
+      - APP_SETTINGS=heartbeat.config.prod
       - POSTGRES_USER_FILE=/run/secrets/pg_user
       - POSTGRES_PASSWORD_FILE=/run/secrets/pg_password
       - POSTGRES_DB_FILE=/run/secrets/pg_database
@@ -30,20 +31,21 @@ services:
       - pg_user
       - pg_database
     ports:
-      - "4000:80"
-    healthcheck:
-      test: curl --fail http://localhost:80/heartbeat/ping || exit 1
-      interval: 10s
-      timeout: 2s
-      retries: 5
+      - "4000:4000"
+    # FIXME: add health checks back.
+    #    healthcheck:
+    #      test: curl --fail http://localhost:4000/heartbeat/ping || exit 1
+    #      interval: 10s
+    #      timeout: 2s
+    #      retries: 5
     networks:
-      - back-net
+      - backend
     depends_on:
       - postgres
 
   search:
     image: digitamo/search
-    build: ./search
+    build: back-end/search
     deploy:
       replicas: 2
       resources:
@@ -52,35 +54,36 @@ services:
           memory: 50M
       restart_policy:
         condition: on-failure
-#      placement:
-#        constraints: [node.role == worker]
+      placement:
+        constraints:
+          - node.role == worker
+          - node.labels.resource != db
     environment:
       - FLASK_ENV=production
-      - APP_SETTINGS=search.config.ProductionConfig
+      - APP_SETTINGS=search.config.prod
       - POSTGRES_USER_FILE=/run/secrets/pg_user
       - POSTGRES_PASSWORD_FILE=/run/secrets/pg_password
       - POSTGRES_DB_FILE=/run/secrets/pg_database
+    secrets:
+      - pg_password
+      - pg_user
+      - pg_database
     ports:
-      - "4001:80"
-    healthcheck:
-      test: curl --fail http://localhost:80/search/ping || exit 1
-      interval: 10s
-      timeout: 2s
-      retries: 5
+      - "4001:4000"
     networks:
-      - back-net
+      - backend
     depends_on:
       - postgres
 
-
   postgres:
-    image: postgres
+    image: postgres:11
     deploy:
       replicas: 1
       restart_policy:
         condition: on-failure
       placement:
-        constraints: [node.role == manager]
+        constraints:
+          - node.labels.resource == db
     environment:
       - POSTGRES_USER_FILE=/run/secrets/pg_user
       - POSTGRES_PASSWORD_FILE=/run/secrets/pg_password
@@ -89,10 +92,30 @@ services:
       - pg_password
       - pg_user
       - pg_database
-    expose:
-      - 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     networks:
-      - back-net
+      - backend
+
+  nginx:
+    image: nginx:stable
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - /home/docker/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - heartbeat
+      - search
+    networks:
+      - backend
 
   visualizer:
     image: dockersamples/visualizer:latest
@@ -102,15 +125,16 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints:
+          - node.role == manager
     networks:
-      - back-net
+      - backend
 
 volumes:
-  db-data:
+  pgdata:
 
 networks:
-  back-net:
+  backend:
 
 secrets:
   pg_user:

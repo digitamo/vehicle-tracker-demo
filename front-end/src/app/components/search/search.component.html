@@ -1,0 +1,51 @@
+<section class="vehicles">
+
+  <div class="vehicles__search">
+    <mat-form-field class="vehicle__search-field" floatLabel="never">
+      <input matInput [(ngModel)]="customerName" placeholder="Customer name" autocomplete="off"
+             (ngModelChange)="applyFilter()">
+    </mat-form-field>
+
+    <mat-form-field class="vehicle__select-field" floatLabel="never">
+      <mat-select placeholder="Online status" [(ngModel)]="online" (ngModelChange)="applyFilter()">
+        <mat-option>None</mat-option>
+        <mat-option value="true">Online</mat-option>
+        <mat-option value="false">Offline</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+  </div>
+
+  <div class="vehicles__table">
+
+    <mat-table [dataSource]="listData" matSort>
+
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>ID</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="reg-no">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Reg.no</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.reg_no}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="customer">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Customer</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.customer.name}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="online">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Online</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.online}}</mat-cell>
+      </ng-container>
+
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+  </div>
+
+</section>

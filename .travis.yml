@@ -1,17 +1,53 @@
+---
 matrix:
   include:
-    - language: python
-      python: 3.6
-      before_script:
-        - cd heartbeat
+    - dist: xenial   # required for Python >= 3.7
+      sudo: false
+      language: python
+      python: 3.7
+      cache: pip
+      services:
+        - docker
+      before_install:
+        - "cd back-end/heartbeat"
+      install:
+        - "pip install -r requirements.txt"
       script:
-        - pip install -r requirements.txt
         - nosetests
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t digitamo/heartbeat .
+        - docker push digitamo/heartbeat
+    - dist: xenial   # required for Python >= 3.7
+      sudo: false
+      language: python
+      python: 3.7
+      cache: pip
+      services:
+        - docker
+      before_install:
+        - "cd back-end/search"
+      install:
+        - "pip install -r requirements.txt"
+      script:
+        - nosetests
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t digitamo/search .
+        - docker push digitamo/search
 
-    - language: python
-      python: 3.6
-      before_script:
-        - cd search
-        script:
-          - pip install -r requirements.txt
-          - nosetests
+    - dist: trusty
+      sudo: false
+      language: node_js
+      node_js: '10'
+      cache: npm
+      addons:
+        apt:
+          sources:
+            - google-chrome
+          packages:
+            - google-chrome-stable
+      before_install:
+        - "cd front-end"
+      install:
+        - npm install
+      script:
+        - npm run test -- --watch=false --no-progress --browsers=ChromeHeadless

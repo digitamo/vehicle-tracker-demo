@@ -1,0 +1,36 @@
+/********************************
+ *  Style vehicles Component   *
+*******************************/
+
+.vehicles {
+
+  // Search Section
+  .vehicles__search {
+    margin: auto;
+    text-align: center;
+  }
+
+  .vehicle__select-field{
+    margin-left: 3em;
+  }
+
+  // Table Section
+  .vehicles__table {
+    .vehicles__table-image {
+      border-radius: 15%;
+      height: 70px;
+      width: 70px;
+      margin: 5px 0;
+    }
+    // Loading & No Data Style
+    ::ng-deep mat-footer-row mat-footer-cell {
+      justify-content: center;
+      font-style: italic;
+    }
+  }
+
+}
+
+
+
+
