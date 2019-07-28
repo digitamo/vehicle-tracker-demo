@@ -18,10 +18,11 @@
  - nose test module as a test runner. 
  - postgres as a database.
  
- `NOTE: ` I had to use postgres as a database solution due to time constrains. But Ideally I would have used different database
- for storing events (preferably elasticsearch) and a relational database for the association between customers and vehicles.
-  
 And the whole back end is orchestrated by docker swarm
+
+ `NOTE: ` Ideally I would have used different databases for storing events (preferably elasticsearch) and 
+ a relational database for the association between customers and vehicles.
+  
 
 
 ### Front end:
@@ -44,7 +45,7 @@ images to docker registry (dockerhub)
 ## How the solution will make use of cloud:
 
 In the case of the back end the a cloud provider would be providing the infrastructure the app would be running on including 
-the virtual machine across multiple regions which would be used as nodes in our clusters, network interfaces for communication between nodes and in 
+the virtual machines across multiple regions which would be used as nodes in our clusters, network interfaces for communication between nodes and in 
 some cases we would be hosting SSL certificates and managing our DNS.
 
 On the front end side we can use the cloud to provide us with  CDN hosting service to introduce high availability and
@@ -55,7 +56,7 @@ faster respond time to users.
 
 Please find instructions on deployment steps below: 
 - [back-end](back-end/README.md)
-- [front-end](back-end/README.md)
+- [front-end](front-end/README.md)
 - [automation test](tests/README.md)
 - [simulation](misc/simulation/README.md)
 
@@ -63,7 +64,7 @@ Please find instructions on deployment steps below:
 ## Serverless architecture proposal:
 
 In the case of using the serverless architecture for for the same challenge the cloud provider would take care of orchestrating
-the services (functions) wither by templates or a web console. auto scaling would be handled by the cloud provider as well.
+the services (functions) either by templates or a web console. auto scaling would be handled by the cloud provider as well.
 To expose the serverless functions to to be invoked we can use an api gateway.
 
 For data storage we can use elasticsearch for storing events and a relational database (possibly postgres) for storing

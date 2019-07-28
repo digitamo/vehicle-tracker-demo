@@ -10,8 +10,8 @@
 
 #### 1. Spin up machine:
 
-In the case of deployment on the cloud you can use the corresponding driver to your cloud provider. You can read more about 
-it [here](https://docs.docker.com/machine/drivers/) 
+`NOTE: ` In the case of deployment on the cloud you can use the corresponding driver to your cloud provider. You can 
+find docker-machine drivers [here](https://docs.docker.com/machine/drivers/) 
 
 ```
 $ docker-machine create --driver virtualbox master
@@ -39,7 +39,6 @@ $ docker swarm init --advertise-addr <ip-address>
 After enabling docker swarm mode a command will be printed out with a token to join the cluster copy it or replace the 
 parts surrounded by `<>` in the join command with their respective values
 
-You need to repeat this for all the VMs except the master node 
 ```
 $ eval $(docker-machine env db)
 $ docker swarm join --token <token> <master-node-ip>:2377
@@ -85,7 +84,7 @@ $ echo "pg_database" | docker secret create pg_database -
 $ docker stack deploy -c docker-compose.yml <stack-name>
 ```
 
-After deploying the stack you need to wait for the node be be running you can monitor the stack in 2 ways
+After deploying the stack you need to wait for the nodes be be running you can monitor the stack in 2 ways
     
    1. Using docker visualizer:
         

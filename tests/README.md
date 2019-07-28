@@ -4,7 +4,7 @@
 - Install dependencies
 ```
 $ cd tests
-& pip install -r requirements
+$ pip install -r requirements
 ```
 
 - Install chrome driver for selenium:
