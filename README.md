@@ -1,7 +1,7 @@
 
 ## Solution architectural sketch
 
-![Alt text](misc/vehicle tracker architecture.jpg?raw=true "architectural sketch")
+![Alt text](misc/images/architecture.jpg?raw=true "architectural sketch")
 
 ## Solution design:
 
@@ -73,5 +73,5 @@ service.
 We would have 2 serverless functions one for writing events (the heartbeat function) and the other for searching/filtering
 (the search function)   
 
-![Alt text](misc/serverless.jpg?raw=true "serverless architecture")
+![Alt text](misc/images/serverless.jpg?raw=true "serverless architecture")
 
