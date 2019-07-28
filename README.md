@@ -1,77 +1,77 @@
-## Running locally
 
-**Dependencies**:
+## Solution architectural sketch
 
-# TODO: include installation links for dependencies.
-- docker
-- docker-machine
-- virtualbox
+![Alt text](misc/vehicle tracker architecture.jpg?raw=true "architectural sketch")
+
+## Solution design:
+
+### Back end:
+
+ On an architectural level The solution makes use of event sourcing to keep track of the heartbeat events and CQRS for 
+ separating write and read operations. This enables the system have an accurate log of the heartbeat -ping messages- 
+ from the vehicles. More over it would introduce sympathy between the system and the domain which is inherently event-based.
+ 
+#### Stack:
+ - Flask as a micro framework for building micro-services.
+ - SqlAlchemy as an ORM, with Flask-Migrate for database migrations.
+ - unittest python module for writing unit tests and integration tests.
+ - nose test module as a test runner. 
+ - postgres as a database.
+ 
+ `NOTE: ` I had to use postgres as a database solution due to time constrains. But Ideally I would have used different database
+ for storing events (preferably elasticsearch) and a relational database for the association between customers and vehicles.
+  
+And the whole back end is orchestrated by docker swarm
 
 
-#### Spin up machine locally:
-```
-$ docker-machine create --driver virtualbox myvm1
-$ docker-machine create --driver virtualbox myvm2
-```
+### Front end:
 
-#### Setup docker secrets:
-```
-$ echo "secret_pg_password" | docker secret create pg_password -
-$ echo "admin" | docker secret create pg_user -
-$ echo "pg_database" | docker secret create pg_database -
-```
+#### Stack:
+- Angular as a framework to build the single page app
+- Jasmine and Karma were used to write unit tests and integration tests. 
 
-#### Run docker swarm:
-```
-$ eval $(docker-machine env myvm1)
-$ docker swarm init
-```
+### Automation test:
 
-#### Add nodes to swarm:
+- unittest python module for writing the test cases.
+- Selenium for writing the test cases logic.
 
-```
-$ eval $(docker-machine env myvm2)
-$ docker swarm join --token <token> <master-node-ip>:2377
-```
+### CI/CD:
 
-#### Add redis data folder:
-- Create redis data folder in `/home/docker/data` in the master node.
+For continuous integration / continuous delivery Travis were used for running unit tests and building and pushing docker 
+images to docker registry (dockerhub)
 
-#### Deploy stack:
-```
-$ docker stack deploy -c docker-compose.yml <stack-name>
-```
 
-#### Run DB migrations:
-```
-$ docker exec -ti <stack-name>_heartbeat.1.$(docker service ps -f 'name=<stack-name>_heartbeat.1' <stack-name>_heartbeat -q --no-trunc | head -n1) /bin/bash
-    > cd heartbeat
-    > flask db upgrade
-```
+## How the solution will make use of cloud:
 
-### Import dummy data.
+In the case of the back end the a cloud provider would be providing the infrastructure the app would be running on including 
+the virtual machine across multiple regions which would be used as nodes in our clusters, network interfaces for communication between nodes and in 
+some cases we would be hosting SSL certificates and managing our DNS.
 
-### Update angular environment.
+On the front end side we can use the cloud to provide us with  CDN hosting service to introduce high availability and
+faster respond time to users.
 
-### Running integration and automation tests.
 
-- Install dependencies
-```
-$ cd tests
-& pip install -r requirements
-```
+## Deployment steps:
 
-- Install chrome driver for selenium:
-    
-    If you're running ubuntu you can use this:
-    ```
-       $ wget https://chromedriver.storage.googleapis.com/2.41/chromedriver_linux64.zip
-       $ unzip chromedriver_linux64.zip
-       $ sudo mv chromedriver /usr/bin/chromedriver
-       $ sudo chown root:root /usr/bin/chromedriver
-       $ sudo chmod +x /usr/bin/chromedriver
-    ```
-  `NOTE: ` Driver version must match your chrome version.  
-    
-    if not follow the drivers part of this guide for installing chrome driver [here](https://selenium-python.readthedocs.io/installation.html#downloading-python-bindings-for-selenium). 
+Please find instructions on deployment steps below: 
+- [back-end](back-end/README.md)
+- [front-end](back-end/README.md)
+- [automation test](tests/README.md)
+- [simulation](misc/simulation/README.md)
+
+
+## Serverless architecture proposal:
+
+In the case of using the serverless architecture for for the same challenge the cloud provider would take care of orchestrating
+the services (functions) wither by templates or a web console. auto scaling would be handled by the cloud provider as well.
+To expose the serverless functions to to be invoked we can use an api gateway.
+
+For data storage we can use elasticsearch for storing events and a relational database (possibly postgres) for storing
+relational data like customer and vehicles data. We have the option to use self-managed database or use database as a
+service.
+
+We would have 2 serverless functions one for writing events (the heartbeat function) and the other for searching/filtering
+(the search function)   
+
+![Alt text](misc/serverless.jpg?raw=true "serverless architecture")
 
