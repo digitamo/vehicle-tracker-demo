@@ -140,3 +140,16 @@ $ eval $(docker-machine env master)
 ```
 
 At this point the back end should be working and has dummy data up and running across multiple nodes. 
+
+
+### Clean up.
+
+Run these commands to stop the cluster and clean up.
+
+```
+$ eval $(docker-machine env -u)
+$ docker-machine rm master
+$ docker-machine rm db
+$ docker-machine rm worker1
+$ docker-machine rm worker2
+``` 
